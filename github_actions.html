@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Metrics API &mdash; PyTorch/Serve master documentation</title>
+  <title>GitHub Actions for TorchServe &mdash; PyTorch/Serve master documentation</title>
   
 
   
@@ -35,8 +35,6 @@
   <link rel="stylesheet" href="_static/katex-math.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="TorchServe REST API" href="rest_api.html" />
-    <link rel="prev" title="Management API" href="management_api.html" />
   <!-- Google Analytics -->
   
   <!-- End Google Analytics -->
@@ -267,11 +265,11 @@
 <li class="toctree-l1"><a class="reference internal" href="workflows.html">18. TorchServe Workflows</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Service APIs:</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="grpc_api.html">TorchServe gRPC API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inference_api.html">Inference API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="management_api.html">Management API</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Metrics API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics_api.html">Metrics API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rest_api.html">TorchServe REST API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="workflow_inference_api.html">Workflow Inference API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="workflow_management_api.html">Management API</a></li>
@@ -325,15 +323,13 @@
       </li>
 
         
-          <li><a href="apis.html">&lt;no title&gt;</a> &gt;</li>
-        
-      <li>Metrics API</li>
+      <li>GitHub Actions for TorchServe</li>
     
     
       <li class="pytorch-breadcrumbs-aside">
         
             
-            <a href="_sources/metrics_api.md.txt" rel="nofollow"><img src="_static/images/view-page-source-icon.svg"></a>
+            <a href="_sources/github_actions.md.txt" rel="nofollow"><img src="_static/images/view-page-source-icon.svg"></a>
           
         
       </li>
@@ -359,63 +355,139 @@
             <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
               
-  <section id="metrics-api">
-<h1>Metrics API<a class="headerlink" href="#metrics-api" title="Permalink to this headline">¶</a></h1>
-<p>Metrics API is listening on port 8082 and only accessible from localhost by default. To change the default setting, see <a class="reference internal" href="configuration.html"><span class="doc">TorchServe Configuration</span></a>. The default metrics endpoint returns Prometheus formatted metrics. You can query metrics using curl requests or point a <a class="reference external" href="#prometheus-server">Prometheus Server</a> to the endpoint and use <a class="reference external" href="#grafana">Grafana</a> for dashboards.</p>
-<p>By default these APIs are enable however same can be disabled by setting <code class="docutils literal notranslate"><span class="pre">enable_metrics_api=false</span></code> in torchserve config.properties file.
-For details refer <a class="reference internal" href="configuration.html"><span class="doc">Torchserve config</span></a> docs.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl http://127.0.0.1:8082/metrics</span>
-
-<span class="gp"># </span>HELP<span class="w"> </span>ts_inference_latency_microseconds<span class="w"> </span>Cumulative<span class="w"> </span>inference<span class="w"> </span>duration<span class="w"> </span><span class="k">in</span><span class="w"> </span>microseconds
-<span class="gp"># </span>TYPE<span class="w"> </span>ts_inference_latency_microseconds<span class="w"> </span>counter
-<span class="go">ts_inference_latency_microseconds{uuid=&quot;d5f84dfb-fae8-4f92-b217-2f385ca7470b&quot;,model_name=&quot;noopversioned&quot;,model_version=&quot;1.11&quot;,} 1990.348</span>
-<span class="go">ts_inference_latency_microseconds{uuid=&quot;d5f84dfb-fae8-4f92-b217-2f385ca7470b&quot;,model_name=&quot;noop&quot;,model_version=&quot;default&quot;,} 2032.411</span>
-<span class="gp"># </span>HELP<span class="w"> </span>ts_inference_requests_total<span class="w"> </span>Total<span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>inference<span class="w"> </span>requests.
-<span class="gp"># </span>TYPE<span class="w"> </span>ts_inference_requests_total<span class="w"> </span>counter
-<span class="go">ts_inference_requests_total{uuid=&quot;d5f84dfb-fae8-4f92-b217-2f385ca7470b&quot;,model_name=&quot;noopversioned&quot;,model_version=&quot;1.11&quot;,} 1.0</span>
-<span class="go">ts_inference_requests_total{uuid=&quot;d5f84dfb-fae8-4f92-b217-2f385ca7470b&quot;,model_name=&quot;noop&quot;,model_version=&quot;default&quot;,} 1.0</span>
-<span class="gp"># </span>HELP<span class="w"> </span>ts_queue_latency_microseconds<span class="w"> </span>Cumulative<span class="w"> </span>queue<span class="w"> </span>duration<span class="w"> </span><span class="k">in</span><span class="w"> </span>microseconds
-<span class="gp"># </span>TYPE<span class="w"> </span>ts_queue_latency_microseconds<span class="w"> </span>counter
-<span class="go">ts_queue_latency_microseconds{uuid=&quot;d5f84dfb-fae8-4f92-b217-2f385ca7470b&quot;,model_name=&quot;noopversioned&quot;,model_version=&quot;1.11&quot;,} 364.884</span>
-<span class="go">ts_queue_latency_microseconds{uuid=&quot;d5f84dfb-fae8-4f92-b217-2f385ca7470b&quot;,model_name=&quot;noop&quot;,model_version=&quot;default&quot;,} 82.349</span>
+  <section id="github-actions-for-torchserve">
+<h1>GitHub Actions for TorchServe<a class="headerlink" href="#github-actions-for-torchserve" title="Permalink to this headline">¶</a></h1>
+<section id="steps-to-create-github-actions">
+<h2>Steps to create github actions<a class="headerlink" href="#steps-to-create-github-actions" title="Permalink to this headline">¶</a></h2>
+<ol>
+<li><p>Create a new workflow file under <code class="docutils literal notranslate"><span class="pre">.github/workflows</span></code></p></li>
+<li><p>Specify the name of the workflow</p>
+<p><code class="docutils literal notranslate"><span class="pre">name:</span> <span class="pre">Run</span> <span class="pre">Regression</span> <span class="pre">Tests</span> <span class="pre">on</span> <span class="pre">CPU</span></code></p>
+</li>
+<li><p>Specify when the workflow should trigger. Some common examples are as follows</p>
+<ul>
+<li><p>Trigger manually</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">on</span><span class="p">:</span> <span class="n">workflow_dispatch</span>
 </pre></div>
 </div>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">curl &quot;http://127.0.0.1:8082/metrics?name[]=ts_inference_latency_microseconds&amp;name[]=ts_queue_latency_microseconds&quot; --globoff</span>
-
-<span class="gp"># </span>HELP<span class="w"> </span>ts_inference_latency_microseconds<span class="w"> </span>Cumulative<span class="w"> </span>inference<span class="w"> </span>duration<span class="w"> </span><span class="k">in</span><span class="w"> </span>microseconds
-<span class="gp"># </span>TYPE<span class="w"> </span>ts_inference_latency_microseconds<span class="w"> </span>counter
-<span class="go">ts_inference_latency_microseconds{uuid=&quot;d5f84dfb-fae8-4f92-b217-2f385ca7470b&quot;,model_name=&quot;noopversioned&quot;,model_version=&quot;1.11&quot;,} 1990.348</span>
-<span class="go">ts_inference_latency_microseconds{uuid=&quot;d5f84dfb-fae8-4f92-b217-2f385ca7470b&quot;,model_name=&quot;noop&quot;,model_version=&quot;default&quot;,} 2032.411</span>
-<span class="gp"># </span>HELP<span class="w"> </span>ts_queue_latency_microseconds<span class="w"> </span>Cumulative<span class="w"> </span>queue<span class="w"> </span>duration<span class="w"> </span><span class="k">in</span><span class="w"> </span>microseconds
-<span class="gp"># </span>TYPE<span class="w"> </span>ts_queue_latency_microseconds<span class="w"> </span>counter
-<span class="go">ts_queue_latency_microseconds{uuid=&quot;d5f84dfb-fae8-4f92-b217-2f385ca7470b&quot;,model_name=&quot;noopversioned&quot;,model_version=&quot;1.11&quot;,} 364.884</span>
-<span class="go">ts_queue_latency_microseconds{uuid=&quot;d5f84dfb-fae8-4f92-b217-2f385ca7470b&quot;,model_name=&quot;noop&quot;,model_version=&quot;default&quot;,} 82.349</span>
+</li>
+<li><p>Trigger on push to a branch</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">on</span><span class="p">:</span>
+    <span class="n">push</span><span class="p">:</span>
+        <span class="n">branches</span><span class="p">:</span>
+        <span class="o">-</span> <span class="n">master</span>
 </pre></div>
 </div>
-<section id="prometheus-server">
-<h2>Prometheus server<a class="headerlink" href="#prometheus-server" title="Permalink to this headline">¶</a></h2>
-<p>To view these metrics on a Prometheus server, download and install using the instructions <a class="reference external" href="https://prometheus.io/download/#prometheus">here</a>. Create a minimal <code class="docutils literal notranslate"><span class="pre">prometheus.yml</span></code> config file as below and run <code class="docutils literal notranslate"><span class="pre">./prometheus</span> <span class="pre">--config.file=prometheus.yml</span></code>.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">global</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w">     </span><span class="l l-Scalar l-Scalar-Plain">15s</span>
-<span class="w">  </span><span class="nt">evaluation_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s</span>
-
-<span class="nt">scrape_configs</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;prometheus&#39;</span>
-<span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;localhost:9090&#39;</span><span class="p p-Indicator">]</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;torchserve&#39;</span>
-<span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;localhost:8082&#39;</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1">#TorchServe metrics endpoint</span>
+</li>
+<li><p>Trigger on pull request</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">on</span><span class="p">:</span>
+  <span class="n">pull_request</span><span class="p">:</span>
+    <span class="n">branches</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">master</span>
 </pre></div>
 </div>
-<p>Navigate to <code class="docutils literal notranslate"><span class="pre">http://localhost:9090/</span></code> on a browser to execute queries and create graphs</p>
-<img width="1231" alt="PrometheusServer" src="https://user-images.githubusercontent.com/880376/86984450-806fc680-c143-11ea-9ae2-f2ef42f24f4c.png"></section>
-<section id="grafana">
-<h2>Grafana<a class="headerlink" href="#grafana" title="Permalink to this headline">¶</a></h2>
-<p>Once you have the Torchserve and Prometheus servers running, you can further <a class="reference external" href="https://prometheus.io/docs/visualization/grafana/">setup</a> Grafana, point it to Prometheus server and navigate to <code class="docutils literal notranslate"><span class="pre">http://localhost:3000/</span></code> to create dashboards and graphs.</p>
-<p>You can use command given below to start Grafana -
-<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">daemon-reload</span> <span class="pre">&amp;&amp;</span> <span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">enable</span> <span class="pre">grafana-server</span> <span class="pre">&amp;&amp;</span> <span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">start</span> <span class="pre">grafana-server</span></code></p>
-<img width="1220" alt="Screen Shot 2020-07-08 at 5 51 57 PM" src="https://user-images.githubusercontent.com/880376/86984550-c4fb6200-c143-11ea-9434-09d4d43dd6d4.png"></section>
+</li>
+<li><p>Trigger nightly</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">on</span><span class="p">:</span>
+    <span class="c1"># run every day at 2:15am</span>
+    <span class="n">schedule</span><span class="p">:</span>
+        <span class="o">-</span> <span class="n">cron</span><span class="p">:</span>  <span class="s1">&#39;15 02 * * *&#39;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>Start defining the job to be run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">jobs</span><span class="p">:</span>
+    <span class="n">regression</span><span class="o">-</span><span class="n">cpu</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>Everything after this is aligned to <code class="docutils literal notranslate"><span class="pre">jobs</span></code></p>
+</li>
+<li><p>Define where the job is to run</p>
+<ul class="simple">
+<li><p>Specify which OS/machine to be run on</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">runs</span><span class="o">-</span><span class="n">on</span><span class="p">:</span> <span class="n">ubuntu</span><span class="o">-</span><span class="mf">20.04</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">runs</span><span class="o">-</span><span class="n">on</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">-</span><span class="n">hosted</span><span class="p">,</span> <span class="n">ci</span><span class="o">-</span><span class="n">gpu</span><span class="p">]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Specify in terms of a matrix. This would run on <code class="docutils literal notranslate"><span class="pre">ubuntu-20.04</span></code> and <code class="docutils literal notranslate"><span class="pre">macOS-latest</span></code>. <code class="docutils literal notranslate"><span class="pre">fail-fast</span></code> indicates to fail the job when the first one fails</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    runs-on: ${{ matrix.os }}
+    strategy:
+    fail-fast: false
+    matrix:
+        os: [ubuntu-20.04, macOS-latest]
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>This would create 2 runs. One run on <code class="docutils literal notranslate"><span class="pre">ci-gpu</span></code> with CUDA 11.6 and a second run on <code class="docutils literal notranslate"><span class="pre">ci-gpu</span></code> with CUDA 11.7</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">runs</span><span class="o">-</span><span class="n">on</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">-</span><span class="n">hosted</span><span class="p">,</span> <span class="n">ci</span><span class="o">-</span><span class="n">gpu</span><span class="p">]</span>
+        <span class="n">strategy</span><span class="p">:</span>
+        <span class="n">fail</span><span class="o">-</span><span class="n">fast</span><span class="p">:</span> <span class="n">false</span>
+        <span class="n">matrix</span><span class="p">:</span>
+            <span class="n">cuda</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;cu116&quot;</span><span class="p">,</span> <span class="s2">&quot;cu117&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p>Specify the commands to be executed for the run</p>
+<ol class="simple">
+<li><p>Setup python</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">Setup</span> <span class="n">Python</span> <span class="mf">3.8</span>
+        <span class="n">uses</span><span class="p">:</span> <span class="n">actions</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">python</span><span class="nd">@v3</span>
+        <span class="k">with</span><span class="p">:</span>
+        <span class="n">python</span><span class="o">-</span><span class="n">version</span><span class="p">:</span> <span class="mf">3.8</span>
+        <span class="n">architecture</span><span class="p">:</span> <span class="n">x84</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>Setup Java</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">Setup</span> <span class="n">Java</span> <span class="mi">17</span>
+        <span class="n">uses</span><span class="p">:</span> <span class="n">actions</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">java</span><span class="nd">@v3</span>
+        <span class="k">with</span><span class="p">:</span>
+        <span class="n">distribution</span><span class="p">:</span> <span class="s1">&#39;zulu&#39;</span>
+        <span class="n">java</span><span class="o">-</span><span class="n">version</span><span class="p">:</span> <span class="s1">&#39;17&#39;</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>Checkout TorchServe</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">Checkout</span> <span class="n">TorchServe</span>
+        <span class="n">uses</span><span class="p">:</span> <span class="n">actions</span><span class="o">/</span><span class="n">checkout</span><span class="nd">@v3</span>
+</pre></div>
+</div>
+<ol>
+<li><p>Specify the shell commands/scripts to be run. Examples:</p>
+<ol class="simple">
+<li></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">Install</span> <span class="n">dependencies</span>
+        <span class="n">run</span><span class="p">:</span> <span class="n">python</span> <span class="n">ts_scripts</span><span class="o">/</span><span class="n">install_dependencies</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">environment</span><span class="o">=</span><span class="n">dev</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">Upload</span> <span class="n">codecov</span>
+        <span class="k">if</span><span class="p">:</span> <span class="n">matrix</span><span class="o">.</span><span class="n">os</span> <span class="o">==</span> <span class="s1">&#39;ubuntu-20.04&#39;</span>
+        <span class="n">run</span> <span class="p">:</span> <span class="o">|</span>
+        <span class="n">curl</span> <span class="o">-</span><span class="n">Os</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">uploader</span><span class="o">.</span><span class="n">codecov</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">latest</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">codecov</span>
+        <span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">codecov</span>
+        <span class="o">./</span><span class="n">codecov</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</li>
+</ol>
+</section>
 </section>
 
 
@@ -423,15 +495,6 @@ For details refer <a class="reference internal" href="configuration.html"><span 
              
             </div>
             <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="rest_api.html" class="btn btn-neutral float-right" title="TorchServe REST API" accesskey="n" rel="next">Next <img src="_static/images/chevron-right-orange.svg" class="next-page"></a>
-      
-      
-        <a href="management_api.html" class="btn btn-neutral" title="Management API" accesskey="p" rel="prev"><img src="_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
-      
-    </div>
   
 
   
@@ -461,9 +524,8 @@ For details refer <a class="reference internal" href="configuration.html"><span 
           <div class="pytorch-right-menu" id="pytorch-right-menu">
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
               <ul>
-<li><a class="reference internal" href="#">Metrics API</a><ul>
-<li><a class="reference internal" href="#prometheus-server">Prometheus server</a></li>
-<li><a class="reference internal" href="#grafana">Grafana</a></li>
+<li><a class="reference internal" href="#">GitHub Actions for TorchServe</a><ul>
+<li><a class="reference internal" href="#steps-to-create-github-actions">Steps to create github actions</a></li>
 </ul>
 </li>
 </ul>
